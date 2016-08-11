@@ -11,6 +11,7 @@ import Parse
 
 class NameGroupViewController: UIViewController {
 
+    @IBAction func unwindToGroup(segue: UIStoryboardSegue) {}
     @IBOutlet weak var nameTF: UITextField!
     @IBAction func AddUserButtonTouched(sender: AnyObject) {
         createGroup()
@@ -19,6 +20,9 @@ class NameGroupViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
+        view.addGestureRecognizer(tap)
+        nameTF.keyboardAppearance = .Dark
     }
 
     override func didReceiveMemoryWarning() {
@@ -28,7 +32,7 @@ class NameGroupViewController: UIViewController {
     
     func createGroup () {
         if nameTF.text != "" {
-            ParseHelper.createGroup(nameTF.text!, creator: PFUser.currentUser()!)
+//            ParseHelper.createGroup(nameTF.text!, creator: PFUser.currentUser()!)
             performSegueWithIdentifier("AddUsersSegue", sender: self)
         } else {
             let alert = UIAlertView()
@@ -48,6 +52,12 @@ class NameGroupViewController: UIViewController {
                 destination.titleLabelText = nameTF.text
             }
         }
+        nameTF.text = ""
+    }
+    
+    func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        view.endEditing(true)
     }
     
     /*
@@ -60,4 +70,11 @@ class NameGroupViewController: UIViewController {
     }
     */
 
+}
+
+// MARK: Style
+extension NameGroupViewController {
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return .LightContent
+    }
 }

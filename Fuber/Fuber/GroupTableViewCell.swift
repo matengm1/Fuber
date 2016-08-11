@@ -12,11 +12,25 @@ import Parse
 class GroupTableViewCell: UITableViewCell {
 
     @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var requestingLabel: UILabel!
     
     var group: PFObject? {
         didSet {
+            var requestUser = group?["requestFromUser"]
+            var requestingUser : PFUser?
+            if requestUser != nil {
+                requestingUser = requestUser as! PFUser
+            }
             titleLabel.text = group?["Name"] as! String
+            if group?["isRequesting"] as! Bool && requestingUser != nil {
+                print(requestUser, "Woop")
+                nameLabel.text = requestingUser!.username
+                requestingLabel.text = "Requesting Pickup"
+            } else {
+                nameLabel.text = ""
+                requestingLabel.text = "No Request"
+            }
 //            requestingLabel.text = group?["isRequesting"] as! String
         }
     }

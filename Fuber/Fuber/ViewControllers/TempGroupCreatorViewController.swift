@@ -15,17 +15,15 @@ import Parse
 class TempGroupCreatorViewController : UIViewController {
 
 
-    @IBAction func unwindToGroup(segue : UIStoryboardSegue) {
-
-    }
+    
     @IBAction func cancelButtonTouched(sender: AnyObject) {
+        self.performSegueWithIdentifier("unwindToGroup", sender: self)
     }
-    @IBAction func createButtonTouched(sender: AnyObject) {
 
-    }
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var titleLabel: UILabel!
+    @IBAction func unwindToGroupName(segue: UIStoryboardSegue) {}
     // stores all the users that match the current search query
     var otherusers: [PFUser]?
     var users: [PFUser]?
@@ -134,6 +132,10 @@ class TempGroupCreatorViewController : UIViewController {
         titleLabel.text = titleLabelText!
     }
     
+    @IBAction func createButtonTouched(sender: AnyObject) {
+        ParseHelper.createGroup(titleLabel.text!, creator: PFUser.currentUser()!)
+        self.performSegueWithIdentifier("unwindToGroup", sender: self)
+    }
 }
 
 // MARK: TableView Data Source

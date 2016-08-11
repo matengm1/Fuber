@@ -145,6 +145,7 @@ class ParseHelper {
         let followObject = PFObject(className: ParseGroupListClass)
         followObject.setObject(name, forKey: ParseGroupName)
         followObject.setObject(creator, forKey: ParseGroupCreator)
+        followObject.setObject(false, forKey: "isRequesting")
 
         followObject.saveInBackgroundWithBlock(ErrorHandling.errorHandlingCallback)
     }
@@ -163,9 +164,9 @@ class ParseHelper {
      :param: toUser  The user that is being followed
      */
     static func addGroupRelationshipFromUser(user: PFUser, toGroup: PFObject) {
-        let followObject = PFObject(className: ParseFollowClass)
-        followObject.setObject(user, forKey: ParseFollowFromUser)
-        followObject.setObject(toGroup, forKey: ParseJoinToGroup)
+        let followObject = PFObject(className: ParseGroupClass)
+        followObject.setObject(user, forKey: "fromUser")
+        followObject.setObject(toGroup, forKey: "toGroup")
         followObject.saveInBackgroundWithBlock(ErrorHandling.errorHandlingCallback)
         print("Following")
     }

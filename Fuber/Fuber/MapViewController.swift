@@ -15,11 +15,20 @@ import Parse
 
 class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate
 {
+    @IBOutlet weak var navItem: UINavigationItem!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var startLocationSearch: UISearchBar!
     @IBOutlet weak var endLocationSearch: UISearchBar!
     @IBAction func RouteDestination(sender: UIButton) {
         BeginMapping()
+        
+    }
+    @IBAction func RequestPickup(sender: AnyObject) {
+        RequestingPickup()
+    }
+    @IBOutlet weak var menuView: UIView!
+    @IBAction func ExitButtonTouched(sender: AnyObject) {
+        self.performSegueWithIdentifier("unwindToGroupSelectorVIewController", sender: self)
     }
     
     let locationManager = CLLocationManager()
@@ -28,6 +37,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     var locationPFGeoPoint : PFGeoPoint?
     let userQuery = PFUser.query()!
     var userLocation : CLLocation?
+    var group : PFObject?
+    var placemark : MKPlacemark?
     
     override func viewDidLoad()
     {
@@ -38,53 +49,92 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         self.locationManager.requestWhenInUseAuthorization()
         self.locationManager.startUpdatingLocation()
         self.mapView.showsUserLocation = true
+        // self.menuView.center = CGPointMake(150, 150)
+        if (!(group!["isRequesting"] as! Bool)) {
+            self.menuView.center.y -= view.bounds.height
+        }
+    
+//        self.menuView.center.y = 40
+
+//        UIView.animateWithDuration(0.7, delay: 1.0, options: .CurveEaseOut, animations: {
+//            var menuTopFrame = self.menuView.frame
+//            self.menuView.center = CGPointMake(150, 150)
+//            self.menuView.frame = menuTopFrame
+//            self.menuView.layoutIfNeeded()
+//            }, completion: { finished in
+//                print("Basket doors opened!")
+//        })
+        let groups = PFQuery(className: "GroupsList")
+        groups.getObjectInBackgroundWithId((group?.objectId)!) { (currentGroup, error) in
+            print(currentGroup!["isRequesting"] as! Bool, "is the current status")
+            if (currentGroup!["isRequesting"] as! Bool == false) {
+                self.navItem.title = "No Request"
+            } else {
+                self.navItem.title = "Requesting Pickup"
+            }
+        }
         
-        
-        
-        
-        
-//        location = "921 Newell Rd, Palo Alto, CA"
-        print(userLocation, "weeeeeeee")
     }
     
     func BeginMapping() {
-//        let geocoder:CLGeocoder = CLGeocoder();
-//        geocoder.geocodeAddressString(location!) { (placemarks: [CLPlacemark]?, error: NSError?) -> Void in
-//            if placemarks?.count > 0 {
-//                let topResult:CLPlacemark = placemarks![0];
-//                let placemark: MKPlacemark = MKPlacemark(placemark: topResult);
-//                
-//                var region: MKCoordinateRegion = self.mapView.region;
-//                region.center = (placemark.location?.coordinate)!;
-//                region.span.longitudeDelta /= 8.0;
-//                region.span.latitudeDelta /= 8.0;
-//                self.mapView.setRegion(region, animated: true);
-//                self.mapView.addAnnotation(placemark);
-//                //                self.drawRoute(placemark)
-//                var timer = NSTimer.scheduledTimerWithTimeInterval(10.0, target: self, selector: Selector("drawRoute:"), userInfo: placemark, repeats: true)
-//            }
-//        }
         
-        
-        
-        print(userLocation)
-//        let placemark: MKPlacemark = MKPlacemark(placemark: userLocation as! CLPlacemark)
-        var region: MKCoordinateRegion = self.mapView.region;
-        region.center = userLocation!.coordinate;
-        region.span.longitudeDelta /= 8.0;
-        region.span.latitudeDelta /= 8.0;
-        self.mapView.setRegion(region, animated: true);
-        var placemark = MKPlacemark(coordinate: userLocation!.coordinate, addressDictionary: nil)
-        self.mapView.addAnnotation(placemark);
+        if userLocation != nil {
+            var region: MKCoordinateRegion = self.mapView.region;
+            region.center = userLocation!.coordinate;
+            region.span.longitudeDelta /= 8.0;
+            region.span.latitudeDelta /= 8.0;
+            self.mapView.setRegion(region, animated: true);
+            placemark = MKPlacemark(coordinate: userLocation!.coordinate, addressDictionary: nil)
+            self.mapView.addAnnotation(placemark!);
 //                        self.drawRoute(placemark)
-        var altTimer = NSTimer.scheduledTimerWithTimeInterval(0.0, target: self, selector: Selector("drawRoute:"), userInfo: placemark, repeats: false)
-        var timer = NSTimer.scheduledTimerWithTimeInterval(10.0, target: self, selector: Selector("drawRoute:"), userInfo: placemark, repeats: true)
+//            var altTimer = NSTimer.scheduledTimerWithTimeInterval(0.0, target: self, selector: Selector("drawRoute:"), userInfo: placemark, repeats: false)
+//            var timer = NSTimer.scheduledTimerWithTimeInterval(10.0, target: self, selector: Selector("drawRoute:"), userInfo: placemark, repeats: true)
+            drawRoute()
+            ChangeState()
+        } else {
+            let alert = UIAlertView()
+            alert.title = "Error"
+            alert.message = "No one is requesting pickup."
+            alert.addButtonWithTitle("Ok")
+            alert.show()
+        }
+    }
+    
+    func ChangeState() {
+        self.navItem.title = "En Route"
+        let groupsAll = PFQuery(className: "GroupsList")
+        groupsAll.getObjectInBackgroundWithId((group?.objectId)!) { (currentGroup, error) in
+                currentGroup!["isRequesting"] = false
+//                currentGroup!.removeObjectForKey("requestFromUser")
+                currentGroup!.saveInBackground()
+        }
     }
     
     func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
         let renderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
         renderer.strokeColor = UIColor.blueColor()
         return renderer
+    }
+    
+    func RequestingPickup() {
+        let groupsList = PFQuery(className: "GroupsList")
+        groupsList.getObjectInBackgroundWithId((group?.objectId)!) { (currentGroup, error) in
+            print(currentGroup!["isRequesting"] as! Bool, "is the current status")
+            if (currentGroup!["isRequesting"] as! Bool == false) {
+                currentGroup!["isRequesting"] = true
+                currentGroup!["requestFromUser"] = PFUser.currentUser()!
+                self.navItem.title = "Requesting Pickup"
+                currentGroup!.saveInBackground()
+                self.navItem.title = "Request Made"
+            } else {
+                print("Someone else is currently requesting")
+                let alert = UIAlertView()
+                alert.title = "Error"
+                alert.message = "Someone else is requesting pickup."
+                alert.addButtonWithTitle("Ok")
+                alert.show()
+            }
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -139,14 +189,15 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
 //    var polylines: [MKPolyline] = []
 //    func drawRoute(destinationPlacemark: MKPlacemark) {
-    func drawRoute(timer: NSTimer) {
+//    func drawRoute(timer: NSTimer) {
+    func drawRoute() {
 
 //        if polylines.count != 0 {
 //            self.mapView.removeOverlays(self.mapView.overlays)
 //        }
         let request = MKDirectionsRequest()
         request.source = MKMapItem.mapItemForCurrentLocation()
-        request.destination = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: timer.userInfo!.coordinate.latitude, longitude: timer.userInfo!.coordinate.longitude), addressDictionary: nil))
+        request.destination = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: placemark!.coordinate.latitude, longitude: placemark!.coordinate.longitude), addressDictionary: nil))
         request.requestsAlternateRoutes = false
         request.transportType = .Automobile
         let directions = MKDirections(request: request)
@@ -155,8 +206,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             
             for route in unwrappedResponse.routes {
                 self.mapView.addOverlay(route.polyline)
-//                print("A")
-//                self.mapView.setVisibleMapRect(route.polyline.boundingMapRect, animated: true)
             }
         }
         var currentLocation = CLLocation!() {
@@ -178,38 +227,15 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             })
         }
     }
-    
-    
-    
-    @IBAction func pickPlace(sender: UIBarButtonItem) {
-//        let center = CLLocationCoordinate2DMake(51.5108396, -0.0922251)
-//        let northEast = CLLocationCoordinate2DMake(center.latitude + 0.001, center.longitude + 0.001)
-//        let southWest = CLLocationCoordinate2DMake(center.latitude - 0.001, center.longitude - 0.001)
-//        let viewport = GMSCoordinateBounds(coordinate: northEast, coordinate: southWest)
-//        let config = GMSPlacePickerConfig(viewport: viewport)
-//        let placePicker = GMSPlacePicker(config: config)
-//        
-//        placePicker.pickPlaceWithCallback({ (place: GMSPlace?, error: NSError?) -> Void in
-//            if let error = error {
-//                print("Pick Place error: \(error.localizedDescription)")
-//                return
-//            }
-//            
-//            if let place = place {
-//                print("Place name \(place.name)")
-//                print("Place address \(place.formattedAddress)")
-//                print("Place attributions \(place.attributions)")
-//            } else {
-//                print("No place selected")
-//            }
-//        })
-    }
 
-    
-    
-    
-    
 //    var resultsViewController: GMSAutocompleteResultsViewController?
     var searchController: UISearchController?
     var resultView: UITextView?
+}
+
+// MARK: Style
+extension MapViewController {
+    override func prefersStatusBarHidden() -> Bool {
+        return true
+    }
 }

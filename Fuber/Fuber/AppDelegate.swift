@@ -21,8 +21,27 @@ import ParseFacebookUtilsV4
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    var window: UIWindow?
     var parseLoginHelper: ParseLoginHelper!
+    var window: UIWindow?
+    
+    override init() {
+        super.init()
+        
+        parseLoginHelper = ParseLoginHelper {[unowned self] user, error in
+            // Initialize the ParseLoginHelper with a callback
+            if let error = error {
+                // 1
+                ErrorHandling.defaultErrorHandler(error)
+            } else  if let _ = user {
+                // if login was successful, display the TabBarController
+                // 2
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                let tabBarController = storyboard.instantiateViewControllerWithIdentifier("mainGroup")
+                // 3
+                self.window?.rootViewController!.presentViewController(tabBarController, animated:true, completion:nil)
+            }
+        }
+    }
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -49,17 +68,55 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         acl.publicReadAccess = true
         PFACL.setDefaultACL(acl, withAccessForCurrentUser: true)
         
+//        // Initialize Facebook
+//        // 1
+//        PFFacebookUtils.initializeFacebookWithApplicationLaunchOptions(launchOptions)
+//
+//        
+//        // check if we have logged in user
+//        // 2
+//        let user = PFUser.currentUser()
+//        if user != nil {
+//            PFFacebookUtils.linkUserInBackground(user!, withReadPermissions: ["email", "name"])
+//        }
+//        let startViewController: UIViewController;
+//        
+//        if (user != nil) {
+//            // 3
+//            // if we have a user, set the TabBarController to be the initial view controller
+//            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//            startViewController = storyboard.instantiateViewControllerWithIdentifier("mainGroup") as! UITabBarController
+//            print(user?.email)
+////            let groupVC = storyboard.instantiateViewControllerWithIdentifier("mainGroup")
+////            let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+////            delegate.window?.rootViewController = groupVC
+////            delegate.window?.makeKeyAndVisible()
+//
+//            
+//        } else {
+//            // 4
+//            // Otherwise set the LoginViewController to be the first
+//            let loginViewController = PFLogInViewController()
+//            loginViewController.fields = [.UsernameAndPassword, .LogInButton, .SignUpButton, .PasswordForgotten]
+//            loginViewController.delegate = parseLoginHelper
+//            loginViewController.signUpController?.delegate = parseLoginHelper
+//            
+//            startViewController = loginViewController
+//        }
+//        
+//        // 5
+//        self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
+//        self.window?.rootViewController = startViewController;
+//        self.window?.makeKeyAndVisible()
+        
         // Initialize Facebook
         // 1
         PFFacebookUtils.initializeFacebookWithApplicationLaunchOptions(launchOptions)
-
         
         // check if we have logged in user
         // 2
         let user = PFUser.currentUser()
-        if user != nil {
-            PFFacebookUtils.linkUserInBackground(user!, withReadPermissions: ["email", "name"])
-        }
+        
         let startViewController: UIViewController;
         
         if (user != nil) {
@@ -67,18 +124,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // if we have a user, set the TabBarController to be the initial view controller
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             startViewController = storyboard.instantiateViewControllerWithIdentifier("mainGroup") as! UITabBarController
-            print(user?.email)
-//            let groupVC = storyboard.instantiateViewControllerWithIdentifier("mainGroup")
-//            let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
-//            delegate.window?.rootViewController = groupVC
-//            delegate.window?.makeKeyAndVisible()
-
-            
         } else {
             // 4
             // Otherwise set the LoginViewController to be the first
-            let loginViewController = PFLogInViewController()
-            loginViewController.fields = [.UsernameAndPassword, .LogInButton, .SignUpButton, .PasswordForgotten, .Facebook]
+            let loginViewController = LogInViewController()
+            loginViewController.fields = [.UsernameAndPassword, .LogInButton, .SignUpButton, .PasswordForgotten]
             loginViewController.delegate = parseLoginHelper
             loginViewController.signUpController?.delegate = parseLoginHelper
             
