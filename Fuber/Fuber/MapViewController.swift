@@ -227,6 +227,24 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             })
         }
     }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        // Make sure your segue name in storyboard is the same as this line
+        if (segue.identifier == "unwindToGroupSelectorVIewController") {
+            if let destination = segue.destinationViewController as? GroupSelectorViewController {
+//                let path = tableView.indexPathForSelectedRow
+//                let cell = tableView.cellForRowAtIndexPath(path!)
+                destination.tableView.reloadData()
+//                print((destination.group?.objectId)! + "is the selected group")
+//                if (requestingArray[path!.row]) {
+//                    //                    print(group?.objectId)
+//                    destination.userLocation = CLLocation(latitude: locationsArray[path!.row].latitude, longitude: locationsArray[path!.row].longitude)
+//                } else {
+//                    destination.userLocation = nil
+//                }
+            }
+        }
+    }
 
 //    var resultsViewController: GMSAutocompleteResultsViewController?
     var searchController: UISearchController?

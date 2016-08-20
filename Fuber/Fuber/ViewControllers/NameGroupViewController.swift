@@ -46,7 +46,7 @@ class NameGroupViewController: UIViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         // Make sure your segue name in storyboard is the same as this line
         if (segue.identifier == "AddUsersSegue") {
-            if let destination = segue.destinationViewController as? TempGroupCreatorViewController {
+            if let destination = segue.destinationViewController as? AddToGroupViewController {
 //                let path = tableView.indexPathForSelectedRow
 //                let cell = tableView.cellForRowAtIndexPath(path!)
                 destination.titleLabelText = nameTF.text

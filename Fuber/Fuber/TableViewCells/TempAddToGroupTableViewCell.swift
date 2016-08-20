@@ -38,13 +38,13 @@ class TempAddToGroupTableViewCell: UITableViewCell {
              it is possible to follow a user.
              */
             if let canFollow = canFollow {
-                addButton.selected = !canFollow
+                addButton.selected = canFollow
             }
         }
     }
     
     @IBAction func AddButtonTouched(sender: AnyObject) {
-        print(user)
+        print("Test")
         if let canFollow = canFollow where canFollow == true {
             delegate?.cell(self, didSelectFollowUser: user!)
             self.canFollow = false

@@ -15,13 +15,13 @@
 		9E3484941D5CF5A800589EFC /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3484931D5CF5A800589EFC /* SettingsViewController.swift */; };
 		9E3484961D5D080F00589EFC /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3484951D5D080F00589EFC /* LogInViewController.swift */; };
 		9E3484981D5D0C3E00589EFC /* Quicksand-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9E3484971D5D0C3E00589EFC /* Quicksand-Regular.ttf */; };
+		9E3484BA1D5E3F1500589EFC /* AddToGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E3484B91D5E3F1500589EFC /* AddToGroupViewController.swift */; };
 		9E8340221D3415CC00E469F8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E8340211D3415CC00E469F8 /* AppDelegate.swift */; };
 		9E8340271D3415CC00E469F8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9E8340251D3415CC00E469F8 /* Main.storyboard */; };
 		9E8340291D3415CC00E469F8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E8340281D3415CC00E469F8 /* Assets.xcassets */; };
 		9E83402C1D3415CC00E469F8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9E83402A1D3415CC00E469F8 /* LaunchScreen.storyboard */; };
 		9EA085811D3585A900D1CBCA /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EA085801D3585A900D1CBCA /* MapViewController.swift */; };
 		9EA085831D359ACA00D1CBCA /* TestMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EA085821D359ACA00D1CBCA /* TestMapViewController.swift */; };
-		9EB4F2241D4BD477003B857F /* TempGroupCreatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EB4F2231D4BD477003B857F /* TempGroupCreatorViewController.swift */; };
 		9EB4F2261D4BD4EB003B857F /* TempAddToGroupTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EB4F2251D4BD4EB003B857F /* TempAddToGroupTableViewCell.swift */; };
 		9EB4F2281D4FB56D003B857F /* NameGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EB4F2271D4FB56D003B857F /* NameGroupViewController.swift */; };
 		9EB696951D3EDF54002033B7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EB696941D3EDF53002033B7 /* User.swift */; };
@@ -48,6 +48,7 @@
 		9E3484931D5CF5A800589EFC /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		9E3484951D5D080F00589EFC /* LogInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		9E3484971D5D0C3E00589EFC /* Quicksand-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Quicksand-Regular.ttf"; sourceTree = "<group>"; };
+		9E3484B91D5E3F1500589EFC /* AddToGroupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddToGroupViewController.swift; sourceTree = "<group>"; };
 		9E83401E1D3415CC00E469F8 /* Fuber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fuber.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E8340211D3415CC00E469F8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9E8340261D3415CC00E469F8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -56,7 +57,6 @@
 		9E83402D1D3415CC00E469F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9EA085801D3585A900D1CBCA /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MapViewController.swift; path = ../MapViewController.swift; sourceTree = "<group>"; };
 		9EA085821D359ACA00D1CBCA /* TestMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestMapViewController.swift; sourceTree = "<group>"; };
-		9EB4F2231D4BD477003B857F /* TempGroupCreatorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TempGroupCreatorViewController.swift; sourceTree = "<group>"; };
 		9EB4F2251D4BD4EB003B857F /* TempAddToGroupTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TempAddToGroupTableViewCell.swift; sourceTree = "<group>"; };
 		9EB4F2271D4FB56D003B857F /* NameGroupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NameGroupViewController.swift; sourceTree = "<group>"; };
 		9EB696941D3EDF53002033B7 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -144,9 +144,9 @@
 				9E0D39961D3432AC00D68D30 /* LoginViewController.swift */,
 				9E0D399A1D3468A800D68D30 /* MainGroupFinderViewController.swift */,
 				9E06EB761D49268D00F285A0 /* FriendSearchViewController.swift */,
-				9EB4F2231D4BD477003B857F /* TempGroupCreatorViewController.swift */,
 				9EB4F2271D4FB56D003B857F /* NameGroupViewController.swift */,
 				9EF088C21D3D8AAE009AE297 /* GroupSelectorViewController.swift */,
+				9E3484B91D5E3F1500589EFC /* AddToGroupViewController.swift */,
 				9EA085801D3585A900D1CBCA /* MapViewController.swift */,
 				9EB696941D3EDF53002033B7 /* User.swift */,
 				9EF088C61D3D9A53009AE297 /* GroupCreatorViewController.swift */,
@@ -293,12 +293,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				9E06EB771D49268D00F285A0 /* FriendSearchViewController.swift in Sources */,
-				9EB4F2241D4BD477003B857F /* TempGroupCreatorViewController.swift in Sources */,
 				9E3484941D5CF5A800589EFC /* SettingsViewController.swift in Sources */,
 				9EF088CA1D3D9C74009AE297 /* AddToGroupTableViewCell.swift in Sources */,
 				9EB4F2261D4BD4EB003B857F /* TempAddToGroupTableViewCell.swift in Sources */,
 				9EFB1CFB1D416234005F67EF /* ParseLoginHelper.swift in Sources */,
 				9E0D399B1D3468A800D68D30 /* MainGroupFinderViewController.swift in Sources */,
+				9E3484BA1D5E3F1500589EFC /* AddToGroupViewController.swift in Sources */,
 				9E0D39971D3432AC00D68D30 /* LoginViewController.swift in Sources */,
 				9EF088C71D3D9A53009AE297 /* GroupCreatorViewController.swift in Sources */,
 				9EF088C31D3D8AAE009AE297 /* GroupSelectorViewController.swift in Sources */,

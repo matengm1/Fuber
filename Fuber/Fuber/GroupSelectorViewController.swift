@@ -18,11 +18,12 @@ class GroupSelectorViewController: UIViewController, PFLogInViewControllerDelega
         case OutOfStock
     }
     
-    let frandClass = PFQuery(className: "GroupsList")
+//    let frandClass = PFQuery(className: "GroupsList")
     let friendClass = PFQuery(className: "GroupsList")
     let altFriendClass = PFQuery(className: "GroupsList")
 //    var groupsArray = NSMutableArray()
     var groupsArray = [PFObject]()
+    var groupsListArray = [PFObject]()
     var friendCount = 0
     var userLocation : CLLocation?
     var locationsArray = [PFGeoPoint]()
@@ -70,12 +71,26 @@ class GroupSelectorViewController: UIViewController, PFLogInViewControllerDelega
 //        
         
         
-        let query = friendClass.whereKey("Creator", equalTo: PFUser.currentUser()!)
-        query.includeKey("requestFromUser")
+//        let query = friendClass.whereKey("Creator", equalTo: PFUser.currentUser()!)
+        let query = PFQuery(className: "Groups").whereKey("fromUser", equalTo: PFUser.currentUser()!)
+//        query.includeKey("requestFromUser")
+        query.includeKey("fromUser")
+        query.includeKey("toGroup")
         query.findObjectsInBackgroundWithBlock { (results : [PFObject]?, error) in
             self.groupsArray = results!
+//            self.groupsListArray = results!["toGroup"]
             self.tableView.reloadData()
         }
+        
+        
+//        let groupsListQuery = PFQuery(className: "GroupsList").whereKey("fromUser", equalTo: PFUser.currentUser()!)
+//        //        query.includeKey("requestFromUser")
+//        query.includeKey("fromUser")
+//        query.includeKey("toGroup")
+//        query.findObjectsInBackgroundWithBlock { (results : [PFObject]?, error) in
+//            self.groupsArray = results!
+//            self.tableView.reloadData()
+//        }
     }
 }
 
@@ -95,6 +110,10 @@ extension GroupSelectorViewController: UITableViewDelegate, UITableViewDataSourc
         cell.group = group
         print((group?.objectId)! + "is the current objectId")
         requestingArray.append(group!["isRequesting"] as! Bool)
+        
+        if let realGroup = group!["toGroup"] as! PFObject? {
+            print(realGroup)
+        }
 
         if let requestFromUser = group!["requestFromUser"] as! PFUser? {
             locationsArray.append(requestFromUser["location"] as! PFGeoPoint)

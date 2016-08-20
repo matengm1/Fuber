@@ -56,14 +56,14 @@ class AddToGroupTableViewCell: UITableViewCell {
 //            addButton.setTitle("Add to Group", forState: .Normal)
 //        }
 ////        print(canFollow)
-        if let canFollow = canFollow where canFollow == true {
-            delegate?.cell(self, didSelectFollowUser: user!)
-            self.canFollow = false
-            print("Follow button tapped")
-        } else {
-            delegate?.cell(self, didSelectUnfollowUser: user!)
-            self.canFollow = true
-        }
+//        if let canFollow = canFollow where canFollow == true {
+//            delegate?.cell(self, didSelectFollowUser: user!)
+//            self.canFollow = false
+//            print("Follow button tapped")
+//        } else {
+//            delegate?.cell(self, didSelectUnfollowUser: user!)
+//            self.canFollow = true
+//        }
     }
     
     override func awakeFromNib() {

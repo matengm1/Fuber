@@ -238,10 +238,10 @@
             </objects>
             <point key="canvasLocation" x="2160" y="-585"/>
         </scene>
-        <!--Temp Group Creator View Controller-->
+        <!--Add To Group View Controller-->
         <scene sceneID="rXe-Tj-Nw9">
             <objects>
-                <viewController id="hgu-aB-Nki" customClass="TempGroupCreatorViewController" customModule="Fuber" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="hgu-aB-Nki" customClass="AddToGroupViewController" customModule="Fuber" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ioX-1e-lae"/>
                         <viewControllerLayoutGuide type="bottom" id="5x4-Gq-c3j"/>
@@ -282,7 +282,7 @@
                                                         <color key="titleColor" red="0.023529411760000001" green="0.74509803919999995" blue="0.74117647060000003" alpha="1" colorSpace="calibratedRGB"/>
                                                     </state>
                                                     <connections>
-                                                        <action selector="AddButtonTouched:" destination="kL2-pW-Xuw" eventType="touchUpInside" id="OOO-s4-pdQ"/>
+                                                        <action selector="AddButtonTouched:" destination="kL2-pW-Xuw" eventType="touchUpInside" id="GIj-NH-PRL"/>
                                                     </connections>
                                                 </button>
                                             </subviews>
@@ -305,8 +305,8 @@
                                             </variation>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="addButton" destination="Q04-wo-Jcj" id="p4D-Nt-LG2"/>
-                                            <outlet property="nameLabel" destination="I2v-zY-Odh" id="djE-LK-zPl"/>
+                                            <outlet property="addButton" destination="Q04-wo-Jcj" id="w3H-px-SLU"/>
+                                            <outlet property="nameLabel" destination="I2v-zY-Odh" id="qud-jh-Wy7"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -439,7 +439,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" red="0.23529411759999999" green="0.26274509800000001" blue="0.31372549020000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.14117647059999999" green="0.1647058824" blue="0.20392156859999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="Uld-vm-AGR" firstAttribute="centerY" secondItem="8up-4q-9db" secondAttribute="centerY" id="8Do-y0-jS0"/>
                             <constraint firstItem="u0a-wg-Num" firstAttribute="centerX" secondItem="8up-4q-9db" secondAttribute="centerX" id="Ffr-YQ-T2W"/>
@@ -506,7 +506,7 @@
                                 <rect key="frame" x="180" y="423" width="240" height="128"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6r5-ru-IK4">
-                                        <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                        <rect key="frame" x="0.0" y="55" width="240" height="73"/>
                                         <state key="normal" title="Set Location">
                                             <color key="titleColor" red="0.023529411760000001" green="0.74509803919999995" blue="0.74117647060000003" alpha="1" colorSpace="calibratedRGB"/>
                                         </state>

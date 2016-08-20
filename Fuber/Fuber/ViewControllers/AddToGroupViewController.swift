@@ -12,14 +12,14 @@ import Firebase
 import Parse
 
 
-class TempGroupCreatorViewController : UIViewController {
-
-
+class AddToGroupViewController : UIViewController {
+    
+    
     
     @IBAction func cancelButtonTouched(sender: AnyObject) {
         self.performSegueWithIdentifier("unwindToGroup", sender: self)
     }
-
+    
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var titleLabel: UILabel!
@@ -72,6 +72,10 @@ class TempGroupCreatorViewController : UIViewController {
         }
     }
     
+    override func viewDidAppear(animated: Bool) {
+        tableView.reloadData()
+    }
+    
     // MARK: Update userlist
     
     /**
@@ -87,23 +91,23 @@ class TempGroupCreatorViewController : UIViewController {
         let toUsers = results.map { $0["toUser"] as! PFUser }
         self.users = toUsers
         
-////        self.users = results.map { $0["toUser"] as! PFUser }
-////        self.users = results as? [PFUser] ?? []
-////        for result in results {
-//            var objects: [PFObject] = results
-//            var userQuery: PFQuery = PFUser.query()!
-//        for object in objects {
-//            userQuery.whereKey("objectId", equalTo: (object["toUser"].objectId!)!)
-//        }
-//        
-//        userQuery.includeKey("toUser")
-//        
-//        userQuery.findObjectsInBackgroundWithBlock({ (foundUsers, error) in
-//            self.users = foundUsers as? [PFUser]
-//            print(self.users, "Weeeeee")
-//            self.tableView.reloadData()
-//        })
-//        
+        ////        self.users = results.map { $0["toUser"] as! PFUser }
+        ////        self.users = results as? [PFUser] ?? []
+        ////        for result in results {
+        //            var objects: [PFObject] = results
+        //            var userQuery: PFQuery = PFUser.query()!
+        //        for object in objects {
+        //            userQuery.whereKey("objectId", equalTo: (object["toUser"].objectId!)!)
+        //        }
+        //
+        //        userQuery.includeKey("toUser")
+        //
+        //        userQuery.findObjectsInBackgroundWithBlock({ (foundUsers, error) in
+        //            self.users = foundUsers as? [PFUser]
+        //            print(self.users, "Weeeeee")
+        //            self.tableView.reloadData()
+        //        })
+        //
         self.tableView.reloadData()
     }
     
@@ -133,14 +137,32 @@ class TempGroupCreatorViewController : UIViewController {
     }
     
     @IBAction func createButtonTouched(sender: AnyObject) {
-        ParseHelper.createGroup(titleLabel.text!, creator: PFUser.currentUser()!)
+        var currentObject = ParseHelper.createGroup(titleLabel.text!, creator: PFUser.currentUser()!)
+        // ADD CREATOR OBJECT
+        let creatorObject = PFObject(className: "Groups")
+        creatorObject.setObject(PFUser.currentUser()!, forKey: "fromUser")
+        creatorObject.setObject(currentObject, forKey: "toGroup")
+        creatorObject.saveInBackground()
+        
+        //ADD ALL OTHER USERS IN FOLLOWING USERS
+        if followingUsers! != [] {
+            for user in followingUsers! {
+                print(currentObject)
+                var followObject = PFObject(className: "Groups")
+                followObject.setObject(try! user.fetch(), forKey: "fromUser")
+                followObject.setObject(currentObject, forKey: "toGroup")
+                followObject.saveInBackgroundWithBlock(ErrorHandling.errorHandlingCallback)
+                print("Following")
+            }
+        }
+        //UNWIND BACK TO THE PREVIOUS VIEW
         self.performSegueWithIdentifier("unwindToGroup", sender: self)
     }
 }
 
 // MARK: TableView Data Source
 
-extension TempGroupCreatorViewController: UITableViewDataSource {
+extension AddToGroupViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.users?.count ?? 0
@@ -148,7 +170,7 @@ extension TempGroupCreatorViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("AddPeopleTableViewCell") as! TempAddToGroupTableViewCell
-//        print(users)
+        //        print(users)
         
         
         
@@ -157,27 +179,20 @@ extension TempGroupCreatorViewController: UITableViewDataSource {
         
         
         
-
-        
-//        var userObject = PFUser.query()!.whereKey("objectId", equalTo: user["objectId"])
-//        print(userName)
-//        do {
-//            let results : [PFUser] = try userName.findObjects() as! [PFUser]
-//            cell.user = results[indexPath.row]
-//        } catch {
-////            return nil
-//        }
-//        nameLabel.text = results.username
         
         
+        //        var userObject = PFUser.query()!.whereKey("objectId", equalTo: user["objectId"])
+        //        print(userName)
+        //        do {
+        //            let results : [PFUser] = try userName.findObjects() as! [PFUser]
+        //            cell.user = results[indexPath.row]
+        //        } catch {
+        ////            return nil
+        //        }
+        //        nameLabel.text = results.username
         
         
         cell.user = user
-        
-        
-        
-        
-        
         
         
         if let followingUsers = followingUsers {
@@ -198,7 +213,7 @@ extension TempGroupCreatorViewController: UITableViewDataSource {
 
 // MARK: Searchbar Delegate
 
-extension TempGroupCreatorViewController: UISearchBarDelegate {
+extension AddToGroupViewController: UISearchBarDelegate {
     
     func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
         searchBar.setShowsCancelButton(true, animated: true)
@@ -220,28 +235,26 @@ extension TempGroupCreatorViewController: UISearchBarDelegate {
 
 // MARK: FriendSearchTableViewCell Delegate
 
-extension TempGroupCreatorViewController: TempAddToGroupTableViewCellDelegate {
+extension AddToGroupViewController: TempAddToGroupTableViewCellDelegate {
     
     func cell(cell: TempAddToGroupTableViewCell, didSelectFollowUser user: PFUser) {
-        ParseHelper.addFollowRelationshipFromUser(PFUser.currentUser()!, toUser: user)
+        ParseHelper.addGroupRelationshipFromUser(PFUser.currentUser()!, toGroup: user)
         // update local cache
         followingUsers?.append(user)
+        for userpeople in followingUsers! {
+            print(userpeople)
+        }
     }
     
     func cell(cell: TempAddToGroupTableViewCell, didSelectUnfollowUser user: PFUser) {
         if let followingUsers = followingUsers {
-            ParseHelper.removeFollowRelationshipFromUser(PFUser.currentUser()!, toUser: user)
+            ParseHelper.removeGroupRelationshipFromUser(PFUser.currentUser()!, toGroup: user)
             // update local cache
             self.followingUsers = followingUsers.filter({$0 != user})
+            for userpeople in followingUsers {
+                print(userpeople)
+            }
         }
     }
     
 }
-
-// MARK: Style
-
-//extension TempGroupCreatorViewController {
-//    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-//        return .LightContent
-//    }
-//}

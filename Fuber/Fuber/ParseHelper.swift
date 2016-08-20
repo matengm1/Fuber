@@ -18,7 +18,7 @@ class ParseHelper {
     
     static let ParseGroupClass      = "Groups"
     static let ParseJoinFromUser    = "fromUser"
-    static let ParseJoinToGroup     = "toUser"
+    static let ParseJoinToGroup     = "toGroup"
     
     // Following Relation
     static let ParseFollowClass       = "Friends"
@@ -141,13 +141,13 @@ class ParseHelper {
      :param: user The user whose followees you want to retrieve
      :param: completionBlock The completion block that is called when the query completes
      */
-    static func createGroup(name: String, creator: PFUser) {
+    static func createGroup(name: String, creator: PFUser) -> PFObject{
         let followObject = PFObject(className: ParseGroupListClass)
         followObject.setObject(name, forKey: ParseGroupName)
         followObject.setObject(creator, forKey: ParseGroupCreator)
         followObject.setObject(false, forKey: "isRequesting")
-
-        followObject.saveInBackgroundWithBlock(ErrorHandling.errorHandlingCallback)
+        try! followObject.save()
+        return followObject
     }
     
     static func getGroupUsersForUser(user: PFUser, completionBlock: PFQueryArrayResultBlock) {
