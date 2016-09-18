@@ -146,6 +146,7 @@ class ParseHelper {
         followObject.setObject(name, forKey: ParseGroupName)
         followObject.setObject(creator, forKey: ParseGroupCreator)
         followObject.setObject(false, forKey: "isRequesting")
+        followObject.setObject(PFUser.currentUser()!, forKey: "requestFromUser")
         try! followObject.save()
         return followObject
     }

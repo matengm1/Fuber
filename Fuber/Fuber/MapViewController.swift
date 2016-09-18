@@ -50,6 +50,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         self.locationManager.startUpdatingLocation()
         self.mapView.showsUserLocation = true
         // self.menuView.center = CGPointMake(150, 150)
+        print(group)
+        print(group!["isRequesting"], "ASDLKJ:SLKDJA:LSKDJAS:DKJS:LKDJAS:LDKJASDKL:ASD::HFLKFGLEHGLJHEF")
         if (!(group!["isRequesting"] as! Bool)) {
             self.menuView.center.y -= view.bounds.height
         }

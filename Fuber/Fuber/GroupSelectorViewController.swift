@@ -30,6 +30,7 @@ class GroupSelectorViewController: UIViewController, PFLogInViewControllerDelega
     var rowPosition = 0
     var group : PFObject?
     var requestingArray = [Bool]()
+    var newUserLocation : PFGeoPoint?
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -92,6 +93,23 @@ class GroupSelectorViewController: UIViewController, PFLogInViewControllerDelega
 //            self.tableView.reloadData()
 //        }
     }
+    
+    override func viewDidAppear(animated: Bool) {
+        // MARK: Querying For The User's Groups
+        requestingArray = []
+        let query = PFQuery(className: "Groups").whereKey("fromUser", equalTo: PFUser.currentUser()!)
+        query.includeKey("fromUser")
+//        query.includeKey("requestFromUser")
+        query.includeKey("toGroup")
+//        query.findObjectsInBackgroundWithBlock { (results : [PFObject]?, error) in
+//            self.groupsArray = results!
+//            self.tableView.reloadData()
+//        }
+//        try! query.findObjects()
+        self.groupsArray = try! query.findObjects()
+        self.tableView.reloadData()
+        print("TABLEVIEW RELOADED")
+    }
 }
 
 extension GroupSelectorViewController: UITableViewDelegate, UITableViewDataSource {
@@ -104,21 +122,32 @@ extension GroupSelectorViewController: UITableViewDelegate, UITableViewDataSourc
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCellWithIdentifier("groupTableViewCell", forIndexPath: indexPath) as! GroupTableViewCell
+        print("hi")
+//        var group = groupsArray[indexPath.row]["toGroup"] as? PFObject
+//        group = groupF["toGroup"] as? PFObject
+        let queryGroup = try! PFQuery(className: "GroupsList").includeKey("requestFromUser").getObjectWithId(((groupsArray[indexPath.row]["toGroup"] as? PFObject)?.objectId)!)
+        group = queryGroup
+        if let requestUserExists = queryGroup["requestFromUser"]{
+        print(queryGroup["requestFromUser"])
+        cell.group = queryGroup
+        print(queryGroup)
+        print((queryGroup["requestFromUser"] as! PFUser).username)
+//        print((group?.objectId)! + "is the current objectId")
+        requestingArray.append(queryGroup["isRequesting"] as! Bool)
+        print(requestingArray)
         
-        
-        group = groupsArray[indexPath.row]
-        cell.group = group
-        print((group?.objectId)! + "is the current objectId")
-        requestingArray.append(group!["isRequesting"] as! Bool)
-        
-        if let realGroup = group!["toGroup"] as! PFObject? {
-            print(realGroup)
-        }
+//        if let realGroup = group!["toGroup"] as! PFObject? {
+//            print(realGroup)
+//        }
 
-        if let requestFromUser = group!["requestFromUser"] as! PFUser? {
+        if let requestFromUser = queryGroup["requestFromUser"] as! PFUser? {
             locationsArray.append(requestFromUser["location"] as! PFGeoPoint)
             let userLocationGeopoint : PFGeoPoint? = locationsArray[indexPath.row]
-            self.getRequestedLocation(group!)
+            self.getRequestedLocation(queryGroup)
+        }
+        
+        newUserLocation = (queryGroup["requestFromUser"] as! PFUser?)!["location"] as! PFGeoPoint
+            
         }
         return cell
     }
@@ -133,11 +162,13 @@ extension GroupSelectorViewController: UITableViewDelegate, UITableViewDataSourc
             if let destination = segue.destinationViewController as? MapViewController {
                 let path = tableView.indexPathForSelectedRow
                 let cell = tableView.cellForRowAtIndexPath(path!)
-                destination.group = groupsArray[(path?.row)!]
-                print((destination.group?.objectId)! + "is the selected group")
-                if (requestingArray[path!.row]) {
+                destination.group = group
+//                print((destination.group?.objectId)! + "is the selected group")
+                if (requestingArray[path!.row] && requestingArray != []) {
 //                    print(group?.objectId)
-                    destination.userLocation = CLLocation(latitude: locationsArray[path!.row].latitude, longitude: locationsArray[path!.row].longitude)
+//                    destination.userLocation = CLLocation(latitude: locationsArray[path!.row].latitude, longitude: locationsArray[path!.row].longitude)
+                    destination.userLocation = CLLocation(latitude: newUserLocation!.latitude, longitude: newUserLocation!.longitude)
+
                 } else {
                     destination.userLocation = nil
                 }
@@ -152,8 +183,8 @@ extension GroupSelectorViewController {
         if group["isRequesting"] as! Bool == true {
             let requestingUser = group["requestFromUser"] as! PFUser
             let userLocGeopoint = requestingUser["location"] as! PFGeoPoint
+            print(userLocGeopoint)
             userLocation = CLLocation(latitude: userLocGeopoint.latitude, longitude: userLocGeopoint.longitude)
-            
         } else {
 //            print("No Request")
         }

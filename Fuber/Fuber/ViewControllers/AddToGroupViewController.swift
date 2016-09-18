@@ -142,16 +142,21 @@ class AddToGroupViewController : UIViewController {
         let creatorObject = PFObject(className: "Groups")
         creatorObject.setObject(PFUser.currentUser()!, forKey: "fromUser")
         creatorObject.setObject(currentObject, forKey: "toGroup")
-        creatorObject.saveInBackground()
+//        creatorObject.saveInBackground()
+        try! creatorObject.save()
         
         //ADD ALL OTHER USERS IN FOLLOWING USERS
         if followingUsers! != [] {
             for user in followingUsers! {
-                print(currentObject)
+//                print(currentObject)
+                print(user)
                 var followObject = PFObject(className: "Groups")
-                followObject.setObject(try! user.fetch(), forKey: "fromUser")
+//                followObject.setObject(try! user.fetch(), forKey: "fromUser")
+                print(followingUsers)
+                followObject.setObject(user, forKey: "fromUser")
                 followObject.setObject(currentObject, forKey: "toGroup")
-                followObject.saveInBackgroundWithBlock(ErrorHandling.errorHandlingCallback)
+//                followObject.saveInBackgroundWithBlock(ErrorHandling.errorHandlingCallback)
+                try! followObject.save()
                 print("Following")
             }
         }
