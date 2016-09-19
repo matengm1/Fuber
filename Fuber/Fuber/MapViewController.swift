@@ -67,13 +67,19 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
 //                print("Basket doors opened!")
 //        })
         let groups = PFQuery(className: "GroupsList")
-        groups.getObjectInBackgroundWithId((group?.objectId)!) { (currentGroup, error) in
-            print(currentGroup!["isRequesting"] as! Bool, "is the current status")
-            if (currentGroup!["isRequesting"] as! Bool == false) {
-                self.navItem.title = "No Request"
-            } else {
-                self.navItem.title = "Requesting Pickup"
-            }
+//        groups.getObjectInBackgroundWithId((group?.objectId)!) { (currentGroup, error) in
+//            print(currentGroup!["Name"], currentGroup!["isRequesting"] as! Bool, "is the current status")
+//            if (currentGroup!["isRequesting"] as! Bool == false) {
+//                self.navItem.title = "No Request"
+//            } else {
+//                self.navItem.title = "Requesting Pickup"
+//            }
+//        }
+        print(group!["Name"], group!["isRequesting"] as! Bool, "is the current status")
+        if (group!["isRequesting"] as! Bool == false) {
+            self.navItem.title = "No Request"
+        } else {
+            self.navItem.title = "Requesting Pickup"
         }
         
     }

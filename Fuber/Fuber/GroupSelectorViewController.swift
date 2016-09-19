@@ -18,10 +18,8 @@ class GroupSelectorViewController: UIViewController, PFLogInViewControllerDelega
         case OutOfStock
     }
     
-//    let frandClass = PFQuery(className: "GroupsList")
     let friendClass = PFQuery(className: "GroupsList")
     let altFriendClass = PFQuery(className: "GroupsList")
-//    var groupsArray = NSMutableArray()
     var groupsArray = [PFObject]()
     var groupsListArray = [PFObject]()
     var friendCount = 0
@@ -38,83 +36,32 @@ class GroupSelectorViewController: UIViewController, PFLogInViewControllerDelega
     }
     
     override func viewDidLoad() {
-//        let altUserQuery = altFriendClass.whereKey("fromUser", equalTo: PFUser.currentUser()!)
-//        let userQuery = friendClass.whereKey("fromUser", equalTo: PFUser.currentUser()!)
-//        
-//          altFriendClass.findObjectsInBackgroundWithBlock { (users, error) in
-//            for user in users! {
-//                print(self.groupsArray)
-//
-//            }
-//            self.tableView.reloadData()
-//        }
-//        
-//        userQuery.countObjectsInBackgroundWithBlock { (count, error) in
-//            if error == nil {
-//                if count != 0 {
-//                    self.friendCount = Int(count)
-//                } else {
-//                    self.friendCount = 2
-//                }
-//                self.tableView.reloadData()
-//            }
-//        }
-//        if (PFUser.currentUser() == nil) {
-//            let loginViewController = PFLogInViewController()
-//            loginViewController.delegate = self
-//            loginViewController.fields = [.UsernameAndPassword, .LogInButton, .SignUpButton, .PasswordForgotten]
-//            loginViewController.emailAsUsername = true
-//            loginViewController.signUpController?.delegate = self
-//            self.presentViewController(loginViewController, animated: false, completion: nil)
-//        } else {
-//            presentLoggedInAlert()
-//        }
-//        
-        
-        
-//        let query = friendClass.whereKey("Creator", equalTo: PFUser.currentUser()!)
         let query = PFQuery(className: "Groups").whereKey("fromUser", equalTo: PFUser.currentUser()!)
-//        query.includeKey("requestFromUser")
         query.includeKey("fromUser")
         query.includeKey("toGroup")
         query.findObjectsInBackgroundWithBlock { (results : [PFObject]?, error) in
             self.groupsArray = results!
-//            self.groupsListArray = results!["toGroup"]
             self.tableView.reloadData()
         }
-        
-        
-//        let groupsListQuery = PFQuery(className: "GroupsList").whereKey("fromUser", equalTo: PFUser.currentUser()!)
-//        //        query.includeKey("requestFromUser")
-//        query.includeKey("fromUser")
-//        query.includeKey("toGroup")
-//        query.findObjectsInBackgroundWithBlock { (results : [PFObject]?, error) in
-//            self.groupsArray = results!
-//            self.tableView.reloadData()
-//        }
     }
     
     override func viewDidAppear(animated: Bool) {
         // MARK: Querying For The User's Groups
         requestingArray = []
+        locationsArray = []
+        groupsListArray = []
         let query = PFQuery(className: "Groups").whereKey("fromUser", equalTo: PFUser.currentUser()!)
         query.includeKey("fromUser")
-//        query.includeKey("requestFromUser")
         query.includeKey("toGroup")
-//        query.findObjectsInBackgroundWithBlock { (results : [PFObject]?, error) in
-//            self.groupsArray = results!
-//            self.tableView.reloadData()
-//        }
-//        try! query.findObjects()
+
         self.groupsArray = try! query.findObjects()
+        
         self.tableView.reloadData()
         print("TABLEVIEW RELOADED")
     }
 }
 
 extension GroupSelectorViewController: UITableViewDelegate, UITableViewDataSource {
-    
-    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return groupsArray.count
     }
@@ -123,31 +70,24 @@ extension GroupSelectorViewController: UITableViewDelegate, UITableViewDataSourc
         
         let cell = tableView.dequeueReusableCellWithIdentifier("groupTableViewCell", forIndexPath: indexPath) as! GroupTableViewCell
         print("hi")
-//        var group = groupsArray[indexPath.row]["toGroup"] as? PFObject
-//        group = groupF["toGroup"] as? PFObject
         let queryGroup = try! PFQuery(className: "GroupsList").includeKey("requestFromUser").getObjectWithId(((groupsArray[indexPath.row]["toGroup"] as? PFObject)?.objectId)!)
         group = queryGroup
+        groupsListArray.append(group!)
+        print(groupsListArray)
         if let requestUserExists = queryGroup["requestFromUser"]{
         print(queryGroup["requestFromUser"])
         cell.group = queryGroup
         print(queryGroup)
         print((queryGroup["requestFromUser"] as! PFUser).username)
-//        print((group?.objectId)! + "is the current objectId")
         requestingArray.append(queryGroup["isRequesting"] as! Bool)
         print(requestingArray)
-        
-//        if let realGroup = group!["toGroup"] as! PFObject? {
-//            print(realGroup)
-//        }
 
         if let requestFromUser = queryGroup["requestFromUser"] as! PFUser? {
             locationsArray.append(requestFromUser["location"] as! PFGeoPoint)
             let userLocationGeopoint : PFGeoPoint? = locationsArray[indexPath.row]
             self.getRequestedLocation(queryGroup)
         }
-        
         newUserLocation = (queryGroup["requestFromUser"] as! PFUser?)!["location"] as! PFGeoPoint
-            
         }
         return cell
     }
@@ -162,13 +102,14 @@ extension GroupSelectorViewController: UITableViewDelegate, UITableViewDataSourc
             if let destination = segue.destinationViewController as? MapViewController {
                 let path = tableView.indexPathForSelectedRow
                 let cell = tableView.cellForRowAtIndexPath(path!)
-                destination.group = group
-//                print((destination.group?.objectId)! + "is the selected group")
-                if (requestingArray[path!.row] && requestingArray != []) {
-//                    print(group?.objectId)
-//                    destination.userLocation = CLLocation(latitude: locationsArray[path!.row].latitude, longitude: locationsArray[path!.row].longitude)
+//                destination.group = group
+                destination.group = groupsListArray[path!.row]
+//                print(groupsListArray as! [PFObject])
+//                if (requestingArray[path!.row] && requestingArray != []) {
+                print(groupsListArray[path!.row]["Name"], groupsListArray[path!.row]["isRequesting"] as! Bool)
+                if (groupsListArray[path!.row]["isRequesting"] as! Bool) {
                     destination.userLocation = CLLocation(latitude: newUserLocation!.latitude, longitude: newUserLocation!.longitude)
-
+//                    destination.userLocation = CLLocation(latitude: locationsArray[path!.row].latitude, longitude: locationsArray[path!.row].longitude)
                 } else {
                     destination.userLocation = nil
                 }
@@ -185,8 +126,6 @@ extension GroupSelectorViewController {
             let userLocGeopoint = requestingUser["location"] as! PFGeoPoint
             print(userLocGeopoint)
             userLocation = CLLocation(latitude: userLocGeopoint.latitude, longitude: userLocGeopoint.longitude)
-        } else {
-//            print("No Request")
         }
     }
 }
@@ -197,25 +136,3 @@ extension GroupSelectorViewController {
         return .LightContent
     }
 }
-
-//MARK: Login
-//extension GroupSelectorViewController {
-//    func logInViewController(logInController: PFLogInViewController, didLogInUser user: PFUser) {
-//        self.dismissViewControllerAnimated(true, completion: nil)
-//        presentLoggedInAlert()
-//    }
-//    
-//    func signUpViewController(signUpController: PFSignUpViewController, didSignUpUser user: PFUser) {
-//        self.dismissViewControllerAnimated(true, completion: nil)
-//        presentLoggedInAlert()
-//    }
-//    
-//    func presentLoggedInAlert() {
-//        let alertController = UIAlertController(title: "You're logged in", message: "Welcome to Vay.K", preferredStyle: .Alert)
-//        let OKAction = UIAlertAction(title: "OK", style: .Default) { (action) in
-//            self.dismissViewControllerAnimated(true, completion: nil)
-//        }
-//        alertController.addAction(OKAction)
-//        self.presentViewController(alertController, animated: true, completion: nil)
-//    }
-//}
