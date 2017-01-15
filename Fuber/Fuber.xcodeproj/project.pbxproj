@@ -24,6 +24,7 @@
 		9EA085831D359ACA00D1CBCA /* TestMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EA085821D359ACA00D1CBCA /* TestMapViewController.swift */; };
 		9EB4F2261D4BD4EB003B857F /* TempAddToGroupTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EB4F2251D4BD4EB003B857F /* TempAddToGroupTableViewCell.swift */; };
 		9EB4F2281D4FB56D003B857F /* NameGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EB4F2271D4FB56D003B857F /* NameGroupViewController.swift */; };
+		9EB621061D8F70C600221C12 /* Fuber_App_Store.mobileprovision in Resources */ = {isa = PBXBuildFile; fileRef = 9EB621051D8F70C600221C12 /* Fuber_App_Store.mobileprovision */; };
 		9EB696951D3EDF54002033B7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EB696941D3EDF53002033B7 /* User.swift */; };
 		9EDC58AE1D413F270071B98F /* ParseHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EDC58AD1D413F270071B98F /* ParseHelper.swift */; };
 		9EDC58B01D413FA30071B98F /* ErrorHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EDC58AF1D413FA30071B98F /* ErrorHandling.swift */; };
@@ -59,6 +60,7 @@
 		9EA085821D359ACA00D1CBCA /* TestMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestMapViewController.swift; sourceTree = "<group>"; };
 		9EB4F2251D4BD4EB003B857F /* TempAddToGroupTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TempAddToGroupTableViewCell.swift; sourceTree = "<group>"; };
 		9EB4F2271D4FB56D003B857F /* NameGroupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NameGroupViewController.swift; sourceTree = "<group>"; };
+		9EB621051D8F70C600221C12 /* Fuber_App_Store.mobileprovision */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fuber_App_Store.mobileprovision; sourceTree = "<group>"; };
 		9EB696941D3EDF53002033B7 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		9EDC58AD1D413F270071B98F /* ParseHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseHelper.swift; sourceTree = "<group>"; };
 		9EDC58AF1D413FA30071B98F /* ErrorHandling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorHandling.swift; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 		9E8340151D3415CB00E469F8 = {
 			isa = PBXGroup;
 			children = (
+				9EB621051D8F70C600221C12 /* Fuber_App_Store.mobileprovision */,
 				9E8340201D3415CC00E469F8 /* Fuber */,
 				9E83401F1D3415CC00E469F8 /* Products */,
 				930DDEAFA479467AF1C3A57A /* Pods */,
@@ -202,7 +205,7 @@
 				TargetAttributes = {
 					9E83401D1D3415CB00E469F8 = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = MGP4DFEB58;
+						DevelopmentTeam = CM697H9J56;
 					};
 				};
 			};
@@ -233,6 +236,7 @@
 				9E0D39991D34616500D68D30 /* GoogleService-Info.plist in Resources */,
 				9E8340291D3415CC00E469F8 /* Assets.xcassets in Resources */,
 				9E8340271D3415CC00E469F8 /* Main.storyboard in Resources */,
+				9EB621061D8F70C600221C12 /* Fuber_App_Store.mobileprovision in Resources */,
 				9E3484981D5D0C3E00589EFC /* Quicksand-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -359,7 +363,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -405,7 +409,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -428,11 +432,15 @@
 			baseConfigurationReference = 51F5401734E3492FAAA274EC /* Pods-Fuber.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ENABLE_BITCODE = NO;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = Fuber/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = EngTech.Fuber;
+				PRODUCT_BUNDLE_IDENTIFIER = com.EngMatthew.Fuber;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "c8a9edb8-a8a0-4b7c-b263-8546a1aeb031";
 			};
 			name = Debug;
 		};
@@ -441,11 +449,15 @@
 			baseConfigurationReference = 907F98C16D97FDA5A7D55F24 /* Pods-Fuber.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ENABLE_BITCODE = NO;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = Fuber/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = EngTech.Fuber;
+				PRODUCT_BUNDLE_IDENTIFIER = com.EngMatthew.Fuber;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "c8a9edb8-a8a0-4b7c-b263-8546a1aeb031";
 			};
 			name = Release;
 		};

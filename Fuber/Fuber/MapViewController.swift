@@ -49,32 +49,12 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         self.locationManager.requestWhenInUseAuthorization()
         self.locationManager.startUpdatingLocation()
         self.mapView.showsUserLocation = true
-        // self.menuView.center = CGPointMake(150, 150)
         print(group)
         print(group!["isRequesting"], "ASDLKJ:SLKDJA:LSKDJAS:DKJS:LKDJAS:LDKJASDKL:ASD::HFLKFGLEHGLJHEF")
         if (!(group!["isRequesting"] as! Bool)) {
             self.menuView.center.y -= view.bounds.height
         }
-    
-//        self.menuView.center.y = 40
-
-//        UIView.animateWithDuration(0.7, delay: 1.0, options: .CurveEaseOut, animations: {
-//            var menuTopFrame = self.menuView.frame
-//            self.menuView.center = CGPointMake(150, 150)
-//            self.menuView.frame = menuTopFrame
-//            self.menuView.layoutIfNeeded()
-//            }, completion: { finished in
-//                print("Basket doors opened!")
-//        })
         let groups = PFQuery(className: "GroupsList")
-//        groups.getObjectInBackgroundWithId((group?.objectId)!) { (currentGroup, error) in
-//            print(currentGroup!["Name"], currentGroup!["isRequesting"] as! Bool, "is the current status")
-//            if (currentGroup!["isRequesting"] as! Bool == false) {
-//                self.navItem.title = "No Request"
-//            } else {
-//                self.navItem.title = "Requesting Pickup"
-//            }
-//        }
         print(group!["Name"], group!["isRequesting"] as! Bool, "is the current status")
         if (group!["isRequesting"] as! Bool == false) {
             self.navItem.title = "No Request"
@@ -94,9 +74,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             self.mapView.setRegion(region, animated: true);
             placemark = MKPlacemark(coordinate: userLocation!.coordinate, addressDictionary: nil)
             self.mapView.addAnnotation(placemark!);
-//                        self.drawRoute(placemark)
-//            var altTimer = NSTimer.scheduledTimerWithTimeInterval(0.0, target: self, selector: Selector("drawRoute:"), userInfo: placemark, repeats: false)
-//            var timer = NSTimer.scheduledTimerWithTimeInterval(10.0, target: self, selector: Selector("drawRoute:"), userInfo: placemark, repeats: true)
             drawRoute()
             ChangeState()
         } else {
@@ -113,7 +90,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         let groupsAll = PFQuery(className: "GroupsList")
         groupsAll.getObjectInBackgroundWithId((group?.objectId)!) { (currentGroup, error) in
                 currentGroup!["isRequesting"] = false
-//                currentGroup!.removeObjectForKey("requestFromUser")
                 currentGroup!.saveInBackground()
         }
     }
@@ -135,7 +111,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
                 currentGroup!.saveInBackground()
                 self.navItem.title = "Request Made"
             } else {
-                print("Someone else is currently requesting")
                 let alert = UIAlertView()
                 alert.title = "Error"
                 alert.message = "Someone else is requesting pickup."
@@ -148,38 +123,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-    
-//    func locationManager(manager: CLLocationManager, didUpdateLocations, var locations: [CLLocation])
-//    {
-//        var location: CLLocation = locations.last!
-//        if location.horizontalAccuracy < 0 {
-//            return
-//        }
-//        locations.append(location)
-//        var count: Int = locations.count
-//        
-//        let center = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-//        
-//        let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1))
-//        
-//        self.mapView.setRegion(region, animated: true)
-//        
-////        self.locationManager.stopUpdatingLocation()
-//        
-//        if count > 1 {
-//            var coordinates: [CLLocationCoordinate2D]
-//            for i in 0 ..< count {
-//                coordinates[i] = (locations[i] as! CLLocation).coordinate
-//            }
-//            var oldPolyline: MKPolyline = polyline
-//            polyline = MKPolyline.polylineWithCoordinates(coordinates, count: count)
-//            self.mapView.addOverlay(polyline)
-////            if oldPolyline != nil {
-//                self.mapView.removeOverlay(oldPolyline)
-////            }
-//        }
-//    }
-//    
+
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation])
     {
@@ -194,15 +138,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         self.locationManager.stopUpdatingLocation()
     }
     
-    
-//    var polylines: [MKPolyline] = []
-//    func drawRoute(destinationPlacemark: MKPlacemark) {
-//    func drawRoute(timer: NSTimer) {
     func drawRoute() {
-
-//        if polylines.count != 0 {
-//            self.mapView.removeOverlays(self.mapView.overlays)
-//        }
         let request = MKDirectionsRequest()
         request.source = MKMapItem.mapItemForCurrentLocation()
         request.destination = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: placemark!.coordinate.latitude, longitude: placemark!.coordinate.longitude), addressDictionary: nil))
@@ -224,10 +160,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             }
         }
         currentLocation = locationManager.location
-        
-//        self.locationPFGeoPoint = PFGeoPoint(location: currentLocation)
-//        print(self.locationPFGeoPoint!)
-//        PFUser.currentUser()!
         PFGeoPoint.geoPointForCurrentLocationInBackground { (loc, error) in
             PFUser.query()!.getObjectInBackgroundWithId((PFUser.currentUser()?.objectId!)!, block: { (currentUser, error) in
                 currentUser!["location"] = loc
@@ -240,21 +172,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         // Make sure your segue name in storyboard is the same as this line
         if (segue.identifier == "unwindToGroupSelectorVIewController") {
             if let destination = segue.destinationViewController as? GroupSelectorViewController {
-//                let path = tableView.indexPathForSelectedRow
-//                let cell = tableView.cellForRowAtIndexPath(path!)
                 destination.tableView.reloadData()
-//                print((destination.group?.objectId)! + "is the selected group")
-//                if (requestingArray[path!.row]) {
-//                    //                    print(group?.objectId)
-//                    destination.userLocation = CLLocation(latitude: locationsArray[path!.row].latitude, longitude: locationsArray[path!.row].longitude)
-//                } else {
-//                    destination.userLocation = nil
-//                }
             }
         }
     }
-
-//    var resultsViewController: GMSAutocompleteResultsViewController?
     var searchController: UISearchController?
     var resultView: UITextView?
 }

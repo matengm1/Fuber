@@ -10,8 +10,9 @@ import Foundation
 import Parse
 import ParseUI
 import UIKit
+import MapKit
 
-class GroupSelectorViewController: UIViewController, PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate {
+class GroupSelectorViewController: UIViewController, PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate, CLLocationManagerDelegate {
     
     enum GroupSelectorError: ErrorType {
         case NoLocation
@@ -50,6 +51,33 @@ class GroupSelectorViewController: UIViewController, PFLogInViewControllerDelega
         requestingArray = []
         locationsArray = []
         groupsListArray = []
+        print(PFUser.currentUser()!["location"])
+    //UPDATING CURRENT LOCATION
+        var currentLocation = CLLocation!()
+        let locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+        
+        func locationManagerTwo(manager: CLLocationManager, didUpdateLocations locations: [CLLocation])
+        {
+            let location = locations.last
+            
+            let center = CLLocationCoordinate2D(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
+            
+            let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1))
+                        
+            locationManager.stopUpdatingLocation()
+        }
+        currentLocation = locationManager.location
+        PFGeoPoint.geoPointForCurrentLocationInBackground { (loc, error) in
+            PFUser.query()!.getObjectInBackgroundWithId((PFUser.currentUser()?.objectId!)!, block: { (currentUser, error) in
+                currentUser!["location"] = loc
+                try! currentUser!.save()
+            })
+        }
+    //UPDATING CURRENT LOCATION
         let query = PFQuery(className: "Groups").whereKey("fromUser", equalTo: PFUser.currentUser()!)
         query.includeKey("fromUser")
         query.includeKey("toGroup")
@@ -87,7 +115,7 @@ extension GroupSelectorViewController: UITableViewDelegate, UITableViewDataSourc
             let userLocationGeopoint : PFGeoPoint? = locationsArray[indexPath.row]
             self.getRequestedLocation(queryGroup)
         }
-        newUserLocation = (queryGroup["requestFromUser"] as! PFUser?)!["location"] as! PFGeoPoint
+        newUserLocation = (queryGroup["requestFromUser"] as! PFUser?)!["location"] as? PFGeoPoint
         }
         return cell
     }
@@ -102,14 +130,10 @@ extension GroupSelectorViewController: UITableViewDelegate, UITableViewDataSourc
             if let destination = segue.destinationViewController as? MapViewController {
                 let path = tableView.indexPathForSelectedRow
                 let cell = tableView.cellForRowAtIndexPath(path!)
-//                destination.group = group
                 destination.group = groupsListArray[path!.row]
-//                print(groupsListArray as! [PFObject])
-//                if (requestingArray[path!.row] && requestingArray != []) {
                 print(groupsListArray[path!.row]["Name"], groupsListArray[path!.row]["isRequesting"] as! Bool)
                 if (groupsListArray[path!.row]["isRequesting"] as! Bool) {
                     destination.userLocation = CLLocation(latitude: newUserLocation!.latitude, longitude: newUserLocation!.longitude)
-//                    destination.userLocation = CLLocation(latitude: locationsArray[path!.row].latitude, longitude: locationsArray[path!.row].longitude)
                 } else {
                     destination.userLocation = nil
                 }
